@@ -1,0 +1,20 @@
+{
+  "name": "REPLA ENERGIA",
+  "short_name": "REPLA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#15265b",
+  "theme_color": "#15265b",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

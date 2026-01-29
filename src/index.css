@@ -1,0 +1,301 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+
+    --primary: 38 92% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 225 63% 22%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 0%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 38 92% 50%;
+
+    --radius: 0.75rem;
+
+    /* Custom REPLA colors */
+    --repla-orange: 38 92% 50%;
+    --repla-orange-light: 38 92% 60%;
+    --repla-orange-dark: 38 92% 40%;
+    --repla-black: 0 0% 0%;
+    --repla-white: 0 0% 100%;
+    --repla-gray: 0 0% 20%;
+    --whatsapp-green: 142 70% 49%;
+
+    /* Gradients */
+    --gradient-orange: linear-gradient(135deg, hsl(38 92% 50%), hsl(38 92% 60%));
+    --gradient-dark: linear-gradient(180deg, hsl(0 0% 0%), hsl(0 0% 10%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 0%) 0%, hsl(0 0% 8%) 100%);
+
+    /* Shadows */
+    --shadow-orange: 0 8px 32px hsl(38 92% 50% / 0.3);
+    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.1);
+    --shadow-elevated: 0 20px 60px -15px hsl(0 0% 0% / 0.2);
+    --shadow-sm: 0 2px 8px hsl(0 0% 0% / 0.05);
+    --shadow-md: 0 4px 16px hsl(0 0% 0% / 0.1);
+    --shadow-lg: 0 8px 32px hsl(0 0% 0% / 0.15);
+    --shadow-orange: 0 8px 32px hsl(38 92% 50% / 0.3);
+    --shadow-orange-lg: 0 12px 40px hsl(38 92% 50% / 0.4);
+    --shadow: 0px 1px 3px 0px hsla(0, 0%, 0%, 0.1);
+  }
+
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 38 92% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 100%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 38 92% 50%;
+    --radius: 0.75rem;
+    --shadow-sm: 0px 1px 1.5px 0px hsla(0, 0%, 0%, 0.1);
+    --shadow: 0px 1px 3px 0px hsla(0, 0%, 0%, 0.1);
+    --shadow-md: 0px 1px 4.5px 0px hsla(0, 0%, 0%, 0.1);
+    --shadow-lg: 0px 1px 7.5px 0px hsla(0, 0%, 0%, 0.1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+@layer components {
+    /* Animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 20px hsl(38 92% 50% / 0.4); }
+    50% { box-shadow: 0 0 40px hsl(38 92% 50% / 0.6); }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  /* WhatsApp Button Pulse */
+  .whatsapp-pulse::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: hsl(var(--whatsapp-green));
+    animation: pulse-ring 1.5s ease-out infinite;
+    z-index: -1;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-black px-8 py-4 rounded-xl font-semibold text-lg
+           transition-all duration-300 ease-out
+           hover:scale-105 hover:shadow-[var(--shadow-orange)]
+           active:scale-100;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground px-6 py-3 rounded-xl font-medium
+           transition-all duration-300 ease-out border-2 border-transparent
+           hover:border-primary hover:scale-105;
+  }
+
+  .btn-whatsapp {
+    @apply bg-[hsl(var(--whatsapp-green))] text-white px-8 py-4 rounded-xl font-semibold text-lg
+           transition-all duration-300 ease-out
+           hover:scale-105 hover:brightness-110
+           active:scale-100;
+  }
+
+  .section-dark {
+    @apply bg-secondary text-secondary-foreground;
+  }
+
+  .section-light {
+    @apply bg-background text-foreground;
+  }
+
+  .card-service {
+    @apply bg-card rounded-2xl p-6 transition-all duration-300 ease-out
+           hover:scale-[1.02] hover:shadow-[var(--shadow-elevated)]
+           border border-border;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-[hsl(var(--repla-orange-light))] 
+           bg-clip-text text-transparent;
+  }
+
+  .glow-orange {
+    box-shadow: 0 0 40px hsl(38 92% 50% / 0.3);
+  }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+  }
+
+  .animate-bounce-soft {
+    animation: bounce-soft 2s ease-in-out infinite;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.5s ease-out forwards;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 0 0 0 0 hsl(142 70% 49% / 0.4);
+  }
+  50% { 
+    transform: scale(1.05);
+    box-shadow: 0 0 20px 10px hsl(142 70% 49% / 0.2);
+  }
+}
+
+@keyframes bounce-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(0 0% 95%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(38 92% 50%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(38 92% 40%);
+}

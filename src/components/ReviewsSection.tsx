@@ -31,8 +31,7 @@ interface CachedData {
   cachedAt: number;
 }
 
-const CACHE_KEY = "repla_google_reviews";
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
 const API_URL = "https://google-api-repla.vercel.app/api/reviews";
 
 const fallbackReviews: Review[] = [
@@ -79,42 +78,14 @@ const ReviewsSection = () => {
 
   useEffect(() => {
     const fetchReviews = async () => {
-      // Check cache first
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (cached) {
-        try {
-          const parsedCache: CachedData = JSON.parse(cached);
-          const now = Date.now();
-          
-          // If cache is still valid (less than 24 hours old)
-          if (now - parsedCache.cachedAt < CACHE_DURATION) {
-            setReviewsData(parsedCache.data);
-            setLoading(false);
-            return;
-          }
-        } catch (e) {
-          console.error("Error parsing cached reviews:", e);
-        }
-      }
-
-      // Fetch fresh data
       try {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error("Failed to fetch reviews");
-        
         const data: ReviewsData = await response.json();
-        
-        // Cache the data
-        const cacheData: CachedData = {
-          data,
-          cachedAt: Date.now(),
-        };
-        localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
-        
         setReviewsData(data);
       } catch (error) {
         console.error("Error fetching reviews:", error);
-        // Use fallback data if fetch fails
+
         setReviewsData({
           rating: 5,
           total: 175,

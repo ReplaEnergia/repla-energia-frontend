@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Zap } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logoRepla from "@/assets/logo-repla.png";
 
 const navLinks = [
@@ -20,27 +21,47 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHome = location.pathname === "/";
+
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
-    const element = document.querySelector(id);
-    if (element) {
-      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({ top: elementPosition - 80, behavior: "smooth" });
-      setIsMenuOpen(false);
+    if (!isHome) {
+      navigate("/");
+      // aguarda a navegação antes de scrollar
+      setTimeout(() => {
+        const element = document.querySelector(id);
+        if (element) {
+          const top = element.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({ top: top - 80, behavior: "smooth" });
+        }
+      }, 300);
+    } else {
+      const element = document.querySelector(id);
+      if (element) {
+        const top = element.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: top - 80, behavior: "smooth" });
+      }
     }
+    setIsMenuOpen(false);
   };
 
-  const scrollToTop = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const scrollToTop = (e: React.MouseEvent) => {
     e.preventDefault();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (!isHome) {
+      navigate("/");
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
     setIsMenuOpen(false);
   };
 
   return (
     <motion.header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${isScrolled
-          ? "bg-[hsl(225_63%_12%/0.96)] backdrop-blur-xl shadow-[0_1px_0_hsl(38_92%_50%/0.15),0_8px_32px_hsl(0_0%_0%/0.3)]"
-          : "bg-[hsl(225_63%_12%/0.6)] backdrop-blur-md border-b border-white/5"
+        ? "bg-[hsl(225_63%_12%/0.96)] backdrop-blur-xl shadow-[0_1px_0_hsl(38_92%_50%/0.15),0_8px_32px_hsl(0_0%_0%/0.3)]"
+        : "bg-[hsl(225_63%_12%/0.6)] backdrop-blur-md border-b border-white/5"
         }`}
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -48,7 +69,7 @@ const Header = () => {
     >
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <a href="#" onClick={scrollToTop} className="flex items-center gap-3 group">
+        <a href="/" onClick={scrollToTop} className="flex items-center gap-3 group">
           <motion.img
             src={logoRepla}
             alt="REPLA ENERGIA"

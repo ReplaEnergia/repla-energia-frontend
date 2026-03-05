@@ -51,6 +51,7 @@ const Footer = () => {
             </p>
             <Link
               to="/trabalhe-conosco"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 rounded-full px-5 py-2 text-sm font-medium text-primary hover:bg-primary/20 transition-colors"
             >
               <Send className="w-4 h-4" />

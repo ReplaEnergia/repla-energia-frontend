@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
@@ -13,12 +14,27 @@ import SectionDivider from "@/components/SectionDivider";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import BackToTopButton from "@/components/BackToTopButton";
+import LoadingScreen from "@/components/LoadingScreen";
 
 // Color tokens – must match section backgrounds exactly
-const DARK = "hsl(225, 63%, 12%)";   // #0C1736 – escuras
-const LIGHT = "hsl(0, 0%, 100%)";    // branco – seções claras
+const DARK = "hsl(225, 63%, 12%)";
+const LIGHT = "hsl(0, 0%, 100%)";
+
+// Só exibe o loading na primeira visita da sessão
+const shouldShowLoading = () => !sessionStorage.getItem("repla-loaded");
 
 const Index = () => {
+  const [loading, setLoading] = useState(shouldShowLoading);
+
+  const handleLoadingComplete = () => {
+    sessionStorage.setItem("repla-loaded", "1");
+    setLoading(false);
+  };
+
+  if (loading) {
+    return <LoadingScreen onComplete={handleLoadingComplete} />;
+  }
+
   return (
     <div className="min-h-screen scroll-smooth">
       <Header />

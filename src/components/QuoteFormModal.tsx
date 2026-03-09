@@ -20,14 +20,13 @@ const QuoteFormModal = ({ isOpen, onClose }: QuoteFormModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const serviceTypes = [
-    "Instalação Elétrica",
     "Manutenção Preventiva",
     "Manutenção Corretiva",
     "Automação Residencial",
-    "Instalação de Câmeras",
     "Energia Solar",
-    "Cerca Elétrica",
-    "Iluminação LED",
+    "Projetos Elétricos",
+    "Serviços Industriais",
+    "Serviços para Comércios",
     "Outro",
   ];
 

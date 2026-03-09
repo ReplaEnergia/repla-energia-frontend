@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
-import { Camera } from "lucide-react";
-import LightningWatermark from "./LightningWatermark";
+import { motion, AnimatePresence } from "framer-motion";
+import { Camera, Images } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import CategoryCard from "./gallery/CategoryCard";
 import CategoryGallery from "./gallery/CategoryGallery";
+import { AnimatedSection } from "./AnimatedSection";
 
 interface GalleryItem {
   id: string;
@@ -26,7 +27,6 @@ const WorksGallerySection = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("Todos");
 
-  // Fetch gallery items from API
   useEffect(() => {
     const fetchGallery = async () => {
       try {
@@ -40,116 +40,149 @@ const WorksGallerySection = () => {
         setIsLoading(false);
       }
     };
-
     fetchGallery();
   }, []);
 
-  // Group items by category
   const itemsByCategory = useMemo(() => {
     const grouped: Record<string, GalleryItem[]> = {};
     galleryItems.forEach((item) => {
-      if (!grouped[item.category]) {
-        grouped[item.category] = [];
-      }
+      if (!grouped[item.category]) grouped[item.category] = [];
       grouped[item.category].push(item);
     });
     return grouped;
   }, [galleryItems]);
 
-  // Extract unique categories from items
-  const categories = useMemo(() => {
-    return ["Todos", ...Object.keys(itemsByCategory)];
-  }, [itemsByCategory]);
+  const categories = useMemo(
+    () => ["Todos", ...Object.keys(itemsByCategory)],
+    [itemsByCategory]
+  );
 
-  // Get filtered items for specific category
   const filteredItems = useMemo(() => {
-    if (selectedCategory === "Todos") {
-      return [];
-    }
+    if (selectedCategory === "Todos") return [];
     return galleryItems.filter((item) => item.category === selectedCategory);
   }, [galleryItems, selectedCategory]);
 
-  const handleCategoryCardClick = (category: string) => {
-    setSelectedCategory(category);
-  };
-
   return (
-    <section id="trabalhos" className="py-20 md:py-28 bg-muted relative overflow-hidden">
-      <LightningWatermark position="left" />
+    <section
+      id="trabalhos"
+      className="py-20 md:py-32 bg-background relative overflow-hidden"
+    >
+      {/* Background effects */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-[0.04] pointer-events-none" />
+      <div className="absolute bottom-6 right-6 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-32 -left-32 w-[400px] h-[400px] bg-primary/3 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-12 md:mb-16">
-          <span className="inline-flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-wider mb-4">
+        <AnimatedSection variant="slideUp" className="text-center mb-12 md:mb-16">
+          <span className="inline-flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-[0.2em] mb-4">
             <Camera className="w-4 h-4" />
             Nosso Portfólio
           </span>
           <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            Conheça nossos <span className="text-gradient">trabalhos</span>
+            Conheça nossos{" "}
+            <span className="text-gradient-animated">trabalhos</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
             Veja alguns dos serviços que realizamos com qualidade e profissionalismo
           </p>
-        </div>
+        </AnimatedSection>
 
         {/* Category Filter */}
-        {isLoading ? (
-          <div className="flex flex-wrap justify-center gap-2 mb-10">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Skeleton key={i} className="h-10 w-24 rounded-full" />
-            ))}
+        <AnimatedSection variant="fadeIn" delay={0.1} className="mb-10">
+          <div className="flex flex-wrap justify-center gap-2">
+            {isLoading
+              ? [1, 2, 3, 4, 5].map((i) => (
+                <Skeleton key={i} className="h-10 w-28 rounded-full" />
+              ))
+              : categories.map((category) => (
+                <motion.button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`relative px-5 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${selectedCategory === category
+                    ? "text-black"
+                    : "text-muted-foreground hover:text-foreground border border-border hover:border-primary/30 bg-muted"
+                    }`}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  {selectedCategory === category && (
+                    <motion.span
+                      layoutId="category-pill"
+                      className="absolute inset-0 bg-primary rounded-full"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">{category}</span>
+                </motion.button>
+              ))}
           </div>
-        ) : (
-          <div className="flex flex-wrap justify-center gap-2 mb-10">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                  selectedCategory === category
-                    ? "bg-primary text-primary-foreground shadow-lg"
-                    : "bg-card text-muted-foreground hover:bg-primary/10 hover:text-primary border border-border"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        )}
+        </AnimatedSection>
 
         {/* Gallery Content */}
-        {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Skeleton key={i} className="aspect-square rounded-2xl" />
-            ))}
-          </div>
-        ) : selectedCategory === "Todos" ? (
-          /* Category Cards View - One card per category with hover carousel */
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-            {Object.entries(itemsByCategory).map(([category, items]) => (
-              <CategoryCard
-                key={category}
-                category={category}
-                items={items}
-                onClick={() => handleCategoryCardClick(category)}
-              />
-            ))}
-          </div>
-        ) : filteredItems.length === 0 ? (
-          <div className="text-center py-12">
-            <Camera className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground">Nenhum trabalho encontrado nesta categoria</p>
-          </div>
-        ) : (
-          /* Category Gallery View - Full carousel for selected category */
-          <CategoryGallery items={filteredItems} category={selectedCategory} />
-        )}
+        <AnimatePresence mode="wait">
+          {isLoading ? (
+            <motion.div
+              key="skeleton"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5"
+            >
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Skeleton key={i} className="aspect-square rounded-2xl bg-white/10" />
+              ))}
+            </motion.div>
+          ) : selectedCategory === "Todos" ? (
+            <motion.div
+              key="category-grid"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.35 }}
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5"
+            >
+              {Object.entries(itemsByCategory).map(([category, items]) => (
+                <CategoryCard
+                  key={category}
+                  category={category}
+                  items={items}
+                  onClick={() => setSelectedCategory(category)}
+                />
+              ))}
+            </motion.div>
+          ) : filteredItems.length === 0 ? (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-16"
+            >
+              <Camera className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">Nenhum trabalho encontrado nesta categoria</p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key={`gallery-${selectedCategory}`}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.35 }}
+            >
+              <CategoryGallery items={filteredItems} category={selectedCategory} />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* Info text */}
-        <p className="text-center text-muted-foreground mt-8 text-sm">
-          📸 Atualizamos regularmente com novos trabalhos realizados
-        </p>
+        {/* Footer info */}
+        <AnimatedSection variant="fadeIn" delay={0.2} className="mt-10 text-center">
+          <div className="inline-flex items-center gap-2 text-muted-foreground text-sm">
+            <Images className="w-4 h-4" />
+            <span>Atualizamos regularmente com novos trabalhos realizados</span>
+          </div>
+        </AnimatedSection>
       </div>
     </section>
   );

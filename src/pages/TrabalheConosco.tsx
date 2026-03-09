@@ -1,5 +1,4 @@
 import { useState, useRef } from "react";
-import emailjs from "@emailjs/browser";
 import {
   Briefcase,
   Heart,
@@ -21,11 +20,23 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import BackToTopButton from "@/components/BackToTopButton";
+import { toast } from "sonner";
 
-// EmailJS - Credenciais configuradas
-const EMAILJS_SERVICE_ID = "service_wi28xxs";
-const EMAILJS_TEMPLATE_ID = "template_yl20ab6";
-const EMAILJS_PUBLIC_KEY = "3Ypx-j-CDSTJq3J_W";
+const API_URL = import.meta.env.VITE_API_URL || "";
+
+const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const result = reader.result as string;
+      // Pega apenas a string bruta em base64 removendo o data:mime/type;base64,
+      const base64Data = result.split(",")[1];
+      resolve(base64Data);
+    };
+    reader.onerror = (error) => reject(error);
+  });
+};
 
 const values = [
   {
@@ -91,6 +102,7 @@ const TrabalheConosco = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: "",
+    email: "",
     phone: "",
     area: "",
     message: "",
@@ -114,8 +126,8 @@ const TrabalheConosco = () => {
         setError("Por favor, envie apenas arquivos PDF.");
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        setError("O arquivo deve ter no máximo 5MB.");
+      if (file.size > 3 * 1024 * 1024) {
+        setError("O arquivo deve ter no máximo 3MB.");
         return;
       }
       setError("");
@@ -136,19 +148,57 @@ const TrabalheConosco = () => {
     setError("");
 
     try {
-      if (!formRef.current) return;
+      if (!cvFile) {
+        setError("Por favor, anexe seu currículo.");
+        setIsSubmitting(false);
+        return;
+      }
 
-      await emailjs.sendForm(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        formRef.current,
-        EMAILJS_PUBLIC_KEY
-      );
+      const base64Content = await fileToBase64(cvFile);
+
+      const payload = {
+        type: "resume",
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        area: formData.area,
+        subject: `Candidatura: ${formData.area}`,
+        message: formData.message || "Não informada",
+        attachment: {
+          filename: cvFile.name,
+          content: base64Content,
+          type: cvFile.type,
+        },
+      };
+
+      const res = await fetch(`${API_URL}/api/mail/send`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.status === 429) {
+        toast.error("Muitos envios", {
+          description: "Por favor, aguarde um minuto e tente novamente.",
+        });
+        setError("Limite de envios atingido. Aguarde um minuto.");
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error("Erro na API.");
+      }
 
       setIsSubmitted(true);
-      setFormData({ name: "", phone: "", area: "", message: "" });
+      setFormData({ name: "", email: "", phone: "", area: "", message: "" });
       setCvFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch {
+      toast.error("Erro no envio", {
+        description: "Não foi possível enviar candidatura. Tente pelo WhatsApp.",
+      });
       setError("Erro ao enviar. Por favor, tente novamente ou entre em contato pelo WhatsApp.");
     } finally {
       setIsSubmitting(false);
@@ -324,6 +374,25 @@ const TrabalheConosco = () => {
 
                   <div className="space-y-2">
                     <label
+                      htmlFor="tc-email"
+                      className="text-sm font-medium text-foreground"
+                    >
+                      E-mail *
+                    </label>
+                    <input
+                      type="email"
+                      id="tc-email"
+                      name="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="seu.email@exemplo.com"
+                      className={inputClasses}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label
                       htmlFor="tc-phone"
                       className="text-sm font-medium text-foreground"
                     >
@@ -381,7 +450,7 @@ const TrabalheConosco = () => {
                           Clique para selecionar ou arraste seu PDF
                         </span>
                         <span className="text-xs text-muted-foreground/60">
-                          Máximo 5MB
+                          Máximo 3MB
                         </span>
                         <input
                           type="file"

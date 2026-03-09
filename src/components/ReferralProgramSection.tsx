@@ -1,7 +1,41 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Gift, Users, DollarSign, Send, Copy, CheckCircle2, Sparkles, ArrowRight } from "lucide-react";
 import { AnimatedSection, StaggerContainer, StaggerItem } from "./AnimatedSection";
+
+const TiltCard = ({ children, className }: { children: React.ReactNode; className?: string }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const xSpring = useSpring(x, { stiffness: 100, damping: 25 });
+  const ySpring = useSpring(y, { stiffness: 100, damping: 25 });
+  const rotateX = useTransform(ySpring, [-0.5, 0.5], ["5deg", "-5deg"]);
+  const rotateY = useTransform(xSpring, [-0.5, 0.5], ["-5deg", "5deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    x.set((e.clientX - rect.left) / rect.width - 0.5);
+    y.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+
+  return (
+    <div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => { x.set(0); y.set(0); }}
+      style={{ perspective: "1000px" }}
+      className="h-full z-10"
+    >
+      <motion.div
+        style={{ rotateX, rotateY, ...({ transformStyle: "preserve-3d" } as React.CSSProperties) }}
+        className={className}
+      >
+        {children}
+      </motion.div>
+    </div>
+  );
+};
 
 const generateReferralCode = (name: string): string => {
   const cleanName = name
@@ -137,26 +171,29 @@ const ReferralProgramSection = () => {
           staggerDelay={0.1}
         >
           {steps.map((item, index) => (
-            <StaggerItem key={index}>
-              <div className="relative bg-white/5 border border-white/10 rounded-2xl p-5 md:p-6 text-center hover:border-primary/30 hover:bg-white/8 transition-all duration-300 group">
-                {/* Step badge */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-black text-xs font-bold px-3 py-1 rounded-full shadow-lg shadow-primary/20">
-                  {item.step}
-                </div>
-                {/* Connector arrow (all except last) */}
-                {index < steps.length - 1 && (
-                  <div className="hidden sm:block absolute -right-3 top-1/2 -translate-y-1/2 z-10">
-                    <ArrowRight className="w-5 h-5 text-primary/40" />
+            <StaggerItem key={index} className="h-full">
+              <TiltCard className="relative bg-white/5 border border-white/10 rounded-2xl p-5 md:p-6 text-center hover:border-primary/30 hover:bg-white/8 transition-colors duration-300 group h-full">
+                {/* 3D Inner Content translation */}
+                <div style={{ transform: "translateZ(30px)" }}>
+                  {/* Step badge */}
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-black text-xs font-bold px-3 py-1 rounded-full shadow-lg shadow-primary/20">
+                    {item.step}
                   </div>
-                )}
-                <div className="w-12 h-12 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center mx-auto mb-4 mt-3 group-hover:bg-primary/20 group-hover:border-primary/40 transition-colors">
-                  <item.icon className="w-6 h-6 text-primary" />
+                  {/* Connector arrow (all except last) */}
+                  {index < steps.length - 1 && (
+                    <div className="hidden sm:block absolute -right-3 top-1/2 -translate-y-1/2 z-10">
+                      <ArrowRight className="w-5 h-5 text-primary/40" />
+                    </div>
+                  )}
+                  <div className="w-12 h-12 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center mx-auto mb-4 mt-3 group-hover:bg-primary/20 group-hover:border-primary/40 transition-colors shadow-inner">
+                    <item.icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="font-heading text-base md:text-lg font-bold text-white mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-white/40 text-sm leading-relaxed">{item.desc}</p>
                 </div>
-                <h3 className="font-heading text-base md:text-lg font-bold text-white mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-white/40 text-sm leading-relaxed">{item.desc}</p>
-              </div>
+              </TiltCard>
             </StaggerItem>
           ))}
         </StaggerContainer>

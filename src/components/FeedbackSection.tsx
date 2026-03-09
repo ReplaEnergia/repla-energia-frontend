@@ -1,12 +1,9 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquareHeart, Send, CheckCircle2, X } from "lucide-react";
-import emailjs from "@emailjs/browser";
+import { toast } from "sonner";
 
-// Reutiliza as mesmas credenciais do TrabalheConosco
-const EMAILJS_SERVICE_ID = "service_wi28xxs";
-const EMAILJS_TEMPLATE_ID = "template_yl20ab6";
-const EMAILJS_PUBLIC_KEY = "3Ypx-j-CDSTJq3J_W";
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 const FeedbackWidget = () => {
   const formRef = useRef<HTMLFormElement>(null);
@@ -24,17 +21,33 @@ const FeedbackWidget = () => {
     setError("");
 
     try {
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        {
-          name: "Feedback do Site",
-          phone: "—",
-          area: "Feedback",
-          message: feedback,
+      const payload = {
+        type: "contact",
+        name: "Visitante (Feedback)",
+        email: "feedback@repla.com.br",
+        subject: "Novo Feedback do Site",
+        message: feedback,
+      };
+
+      const res = await fetch(`${API_URL}/api/mail/send`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        EMAILJS_PUBLIC_KEY
-      );
+        body: JSON.stringify(payload),
+      });
+
+      if (res.status === 429) {
+        toast.error("Muitos envios", {
+          description: "Por favor, aguarde um minuto antes de enviar novamente.",
+        });
+        setError("Limite de envios atingido. Aguarde um pouco.");
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error("Erro na API.");
+      }
 
       setIsSubmitted(true);
       setFeedback("");
@@ -44,6 +57,9 @@ const FeedbackWidget = () => {
         setIsOpen(false);
       }, 3500);
     } catch {
+      toast.error("Erro no envio", {
+        description: "Não foi possível enviar seu feedback agora. Tente de novo mais tarde.",
+      });
       setError("Erro ao enviar. Tente novamente.");
     } finally {
       setIsSubmitting(false);
@@ -134,7 +150,7 @@ const FeedbackWidget = () => {
                       onSubmit={handleSubmit}
                       className="flex-1 p-5 flex flex-col gap-5"
                     >
-                      <p className="text-white/45 text-sm leading-relaxed">
+                      <p className="text-white/45 text-sm leading-relaxed mb-4">
                         Deixe sua sugestão ou opinião. Queremos sempre oferecer o melhor para você!
                       </p>
 

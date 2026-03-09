@@ -81,11 +81,10 @@ const EmergencySection = () => {
                   </div>
                   <span className="text-foreground font-semibold">Horário Comercial</span>
                 </div>
-                <p className="text-muted-foreground text-sm mb-4">Segunda a sexta, das 8h às 18h</p>
+                <p className="text-muted-foreground text-sm mb-4">Segunda a sexta, das 8h às 18h a partir de</p>
                 <div>
                   <span className="text-3xl font-bold text-primary">R$ 150</span>
                   <span className="text-lg text-primary">,00</span>
-                  <span className="text-muted-foreground text-sm ml-2">a partir de</span>
                 </div>
               </TiltCard>
             </StaggerItem>

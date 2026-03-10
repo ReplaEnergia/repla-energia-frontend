@@ -20,7 +20,7 @@ interface GalleryResponse {
   items: GalleryItem[];
 }
 
-const GALLERY_API_URL = "https://google-api-repla.vercel.app/api/gallery";
+const GALLERY_API_URL = `${import.meta.env.VITE_API_URL}/api/gallery`;
 
 const WorksGallerySection = () => {
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);

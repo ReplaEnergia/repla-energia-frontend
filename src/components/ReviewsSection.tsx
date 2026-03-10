@@ -36,7 +36,7 @@ interface CachedData {
 
 const CACHE_KEY = "repla_google_reviews";
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-const API_URL = "https://google-api-repla.vercel.app/api/reviews";
+const API_URL = `${import.meta.env.VITE_API_URL}/api/reviews`;
 
 const fallbackReviews: Review[] = [
   {

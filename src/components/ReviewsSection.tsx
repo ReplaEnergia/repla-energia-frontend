@@ -169,8 +169,8 @@ const ReviewsSection = () => {
         <AnimatedSection variant="slideUp" delay={0.1} className="mb-12">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-16 p-8 rounded-2xl glass-dark border border-white/10 max-w-3xl mx-auto">
             {[
-              { value: 175, suffix: "+", label: "Avaliações Google", decimals: 0 },
-              { value: 5.0, suffix: "★", label: "Nota Média", decimals: 1 },
+              { value: totalReviews, suffix: "+", label: "Avaliações Google", decimals: 0 },
+              { value: overallRating, suffix: "★", label: "Nota Média", decimals: 1 },
               { value: 12, suffix: " meses", label: "Garantia", decimals: 0 },
             ].map(({ value, suffix, label, decimals }) => (
               <motion.div

@@ -31,7 +31,7 @@ const Footer = () => {
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="mailto:replaenergia_dev@outlook.com"
+                href="mailto:wromano.replaenergia.sp@outlook.com"
                 className="p-2 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
                 aria-label="Email"
               >
@@ -73,8 +73,8 @@ const Footer = () => {
             </div>
             <div className="flex items-center gap-2 text-secondary-foreground/80">
               <Mail className="w-4 h-4 text-primary" />
-              <a href="mailto:replaenergia_dev@outlook.com" className="text-sm hover:text-primary transition-colors">
-                replaenergia_dev@outlook.com
+              <a href="mailto:wromano.replaenergia.sp@outlook.com" className="text-sm hover:text-primary transition-colors">
+                wromano.replaenergia.sp@outlook.com
               </a>
             </div>
             <div className="flex items-center gap-2 text-secondary-foreground/80">

@@ -148,7 +148,7 @@ const HeroSection = () => {
 
             {/* Feature pills */}
             <motion.div
-              className="flex flex-wrap justify-center gap-3 mb-10"
+              className="flex flex-wrap justify-center gap-3 mb-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.55 }}

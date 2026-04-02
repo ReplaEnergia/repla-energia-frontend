@@ -148,7 +148,7 @@ const HeroSection = () => {
 
             {/* Feature pills */}
             <motion.div
-              className="flex flex-wrap justify-center gap-3 mb-10"
+              className="flex flex-wrap justify-center gap-3 mb-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.55 }}
@@ -166,6 +166,24 @@ const HeroSection = () => {
                   {text}
                 </div>
               ))}
+            </motion.div>
+
+            {/* Phone Number Call Link */}
+            <motion.div
+              className="mb-10"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
+              <a 
+                href="tel:11988271216"
+                className="inline-flex items-center gap-3 text-2xl md:text-3xl font-bold text-white hover:text-primary transition-all duration-300"
+              >
+                <div className="bg-primary/20 p-2 rounded-full border border-primary/30">
+                  <Phone className="w-6 h-6 md:w-7 md:h-7 text-primary animate-pulse" />
+                </div>
+                <span className="tracking-tight">(11) 98827-1216</span>
+              </a>
             </motion.div>
 
             {/* CTA Buttons */}

@@ -170,18 +170,24 @@ const HeroSection = () => {
 
             {/* Phone Number Call Link */}
             <motion.div
-              className="mb-5 flex justify-center"
+              className=" flex justify-center w-full px-4"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
             >
-              <a
-                href="tel:11988271216"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-white/10 text-white/90 hover:text-primary hover:border-primary/50 transition-all duration-300 group"
-              >
-                <Phone className="w-4 h-4 text-primary animate-pulse group-hover:scale-110 transition-transform" />
-                <span className="text-sm  tracking-tight">(11) 98827-1216</span>
-              </a>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full sm:w-auto">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="w-full sm:min-w-[300px] border-white/20 text-white/80 hover:bg-white/10 backdrop-blur-sm"
+                >
+                  <a href="tel:11988271216">
+                    <Phone className="h-5 w-5 text-primary animate-pulse" />
+                    (11) 98827-1216
+                  </a>
+                </Button>
+              </motion.div>
             </motion.div>
 
             {/* CTA Buttons */}
